@@ -85,9 +85,6 @@ end
 
 SlashCmdList.JUMPCOUNTER = function(msg)
     if not msg or msg == "" then
-        if JumpCounter == nil then
-            JumpCounter = 0
-        end
         DEFAULT_CHAT_FRAME:AddMessage(string.format("You have jumped %s times.", GetCurrentJumpCount()))
     elseif (msg == "clear") then
         JumpCounter = 0
