@@ -10,21 +10,6 @@ local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
 local dataObj = ldb:NewDataObject("Jump Counter", {type = "data source", text = "0 Jumps"})
 local frame = CreateFrame("frame")
 
--- Write jumps to data broker
-frame:SetScript(
-    "OnUpdate",
-    function(self, elap)
-        elapsed = elapsed + elap
-        if elapsed < UPDATE_PERIOD then
-            return
-        end
-
-        elapsed = 0
-        local fps = GetFramerate()
-        dataObj.text = string.format("%d Jumps", JumpCounter)
-    end
-)
-
 -- Write data broker tool tip
 function dataObj:OnTooltipShow()
     self:AddLine("Total Jumps")
@@ -66,6 +51,7 @@ end
 
 local function PerformJump()
     JumpCounter = GetCurrentJumpCount() + 1
+    dataObj.text = string.format("%d Jumps", JumpCounter)
     AccounceMilestone()
 end
 
