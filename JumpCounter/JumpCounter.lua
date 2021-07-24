@@ -51,7 +51,7 @@ end
 
 local function PerformJump()
     JumpCounter = GetCurrentJumpCount() + 1
-    dataObj.text = string.format("%d Jumps", JumpCounter)
+    dataObj.text = string.format("%d Jumps", GetCurrentJumpCount())
     AccounceMilestone()
 end
 
@@ -73,6 +73,6 @@ SlashCmdList.JUMPCOUNTER = function(msg)
     if not msg or msg == "" then
         DEFAULT_CHAT_FRAME:AddMessage(string.format("You have jumped %s times.", GetCurrentJumpCount()))
     elseif (msg == "clear") then
-        JumpCounter = 0
+        JumpCounter = nil
     end
 end
