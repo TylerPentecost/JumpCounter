@@ -61,7 +61,7 @@ local function AccounceMilestone()
 end
 
 local function GetCurrentJumpCount()
-    return JumpCounter and 0 or JumpCounter
+    return JumpCounter or 0
 end
 
 local function PerformJump()
