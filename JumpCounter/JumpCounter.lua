@@ -2,7 +2,7 @@
 -- Name: JumpCounter
 -- Author: Aic, Zolerii
 -- Description: Counts the number of times you jump
--- Version: 1.0.0
+-- Version: 0.1.0
 
 local UPDATE_PERIOD = 0.5
 local elapsed = 0
@@ -42,22 +42,38 @@ function dataObj:OnLeave()
     GameTooltip:Hide()
 end
 
+local function CreateMilestoneMessage()
+    local icon = "|TInterface\\Icons\\INV_Gizmo_supersappercharge:32|t"
+    local color = "|cFFDAA520"
+    local message = string.format("Congratulations, It's your %sth Jump!", JumpCounter)
+
+    return string.format("%s %s %s %s", icon, color, message, icon)
+end
+
+local function AtMilestone()
+    return JumpCounter == 10 or JumpCounter == 100 or JumpCounter == 1000 or mod(JumpCounter, 5000) == 0
+end
+
+local function AccounceMilestone()
+    if AtMilestone() then
+        DEFAULT_CHAT_FRAME:AddMessage(CreateMilestoneMessage())
+    end
+end
+
+local function GetCurrentJumpCount()
+    return JumpCounter and 0 or JumpCounter
+end
+
+local function PerformJump()
+    JumpCounter = GetCurrentJumpCount() + 1
+    AccounceMilestone()
+end
+
 hooksecurefunc(
     "JumpOrAscendStart",
     function()
-        if JumpCounter == nil then
-            JumpCounter = 0
-        else
-            if not IsFalling() then
-                JumpCounter = JumpCounter + 1
-            end
-            if JumpCounter == 10 or JumpCounter == 100 or JumpCounter == 1000 or mod(JumpCounter, 5000) == 0 then
-                -- Formatting taken from JumpsCount addon by boolbazaur https://www.curseforge.com/wow/addons/jumps-count
-                DEFAULT_CHAT_FRAME:AddMessage(
-                    "|TInterface\\Icons\\INV_Gizmo_supersappercharge:32|t |cFFDAA520 Congratulations, It's your " ..
-                        JumpCounter .. "th Jump! |TInterface\\Icons\\INV_Gizmo_supersappercharge:32|t"
-                )
-            end
+        if not IsFalling() and not IsFlying() then
+            PerformJump()
         end
     end
 )
@@ -72,7 +88,7 @@ SlashCmdList.JUMPCOUNTER = function(msg)
         if JumpCounter == nil then
             JumpCounter = 0
         end
-        DEFAULT_CHAT_FRAME:AddMessage("You have jumped " .. JumpCounter .. " times.")
+        DEFAULT_CHAT_FRAME:AddMessage(string.format("You have jumped %s times.", GetCurrentJumpCount()))
     elseif (msg == "clear") then
         JumpCounter = 0
     end
